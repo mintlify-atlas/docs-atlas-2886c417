@@ -1,0 +1,56 @@
+{
+  "projectType": "cli-tool",
+  "projectName": "pm - Rust Password Manager",
+  "projectDescription": "A fast, secure, and lightweight password manager CLI built entirely in Rust using local XChaCha20-Poly1305 encryption and Argon2id key derivation — no cloud, no tracking.",
+  "theme": "aspen",
+  "primaryColor": "#7c7c7c",
+  "lightColor": "#101010",
+  "darkColor": "#c2c2c2",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": ["introduction", "installation", "quickstart"]
+          },
+          {
+            "group": "Commands",
+            "pages": [
+              "commands/overview",
+              "commands/add",
+              "commands/get",
+              "commands/delete",
+              "commands/list"
+            ]
+          },
+          {
+            "group": "Security",
+            "pages": ["security/overview", "security/encryption", "security/data-storage"]
+          },
+          {
+            "group": "Advanced",
+            "pages": ["advanced/build-from-source", "advanced/uninstallation", "advanced/contributing"]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Local-only storage — passwords never leave your machine",
+    "XChaCha20-Poly1305 authenticated encryption",
+    "Argon2id key derivation from master password",
+    "Memory-safe sensitive data handling with zeroize",
+    "Cross-platform support (Linux, macOS, Windows)",
+    "Single binary with instant startup — no GUI bloat",
+    "Master password protected vault"
+  ],
+  "publicApiSurface": [
+    "pm add <name>",
+    "pm get <name>",
+    "pm delete <name>",
+    "pm list",
+    "pm --help"
+  ]
+}
