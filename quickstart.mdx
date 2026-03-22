@@ -20,10 +20,11 @@ This guide walks you through first-time setup, creating a master password, stori
     ```
 
     ```
-    No master password found. Please create one.
-    Enter new master password:
-    Confirm master password:
-    No passwords stored yet.
+    No master password found. Setup required.
+    Enter New Master Password:
+    Confirm Master Password:
+    Creating new Master Password...
+    No passwords saved yet!
     ```
 
     Enter your chosen master password when prompted, then confirm it. After this step, every subsequent `pm` command will require this password.
@@ -37,9 +38,10 @@ This guide walks you through first-time setup, creating a master password, stori
     ```
 
     ```
-    Enter master password:
-    Enter password for 'github':
-    Password for 'github' saved.
+    Enter Master Password:
+    Enter password for github :
+    Confirm Password :
+    Saved successfully!
     ```
 
     Type your master password, then enter the password you want to store for that entry. The value is encrypted immediately and written to your vault.
@@ -53,8 +55,8 @@ This guide walks you through first-time setup, creating a master password, stori
     ```
 
     ```
-    Enter master password:
-    Password for 'github': s3cr3t-p@ssw0rd
+    Enter Master Password:
+    Password for github : s3cr3tP@ssw0rd
     ```
 
     The password is printed to stdout so you can copy it to your clipboard.
@@ -68,9 +70,10 @@ This guide walks you through first-time setup, creating a master password, stori
     ```
 
     ```
-    Enter master password:
-    Stored passwords:
-      - github
+    Enter Master Password:
+    --- Saved Passwords ---
+    • github
+    -----------------------
     ```
   </Step>
 
@@ -82,8 +85,8 @@ This guide walks you through first-time setup, creating a master password, stori
     ```
 
     ```
-    Enter master password:
-    Password for 'github' deleted.
+    Enter Master Password:
+    Successfully deleted password for: github
     ```
 
     The entry is removed from the encrypted store. This action cannot be undone.

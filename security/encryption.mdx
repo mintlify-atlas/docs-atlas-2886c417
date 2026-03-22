@@ -9,7 +9,23 @@ pm uses two cryptographic primitives: Argon2id for key derivation and XChaCha20-
 
 Your master password is never stored directly. Instead, pm derives a 256-bit encryption key from it using Argon2id.
 
-### Argon2id parameters
+pm uses Argon2id in two distinct ways: once for **key derivation** (to produce the encryption key for the vault) and once for **master password verification** (to produce the stored hash in `master.hash`). These two operations use different parameters.
+
+### Key derivation (for vault encryption)
+
+When deriving the encryption key, pm uses `Argon2::default()`:
+
+| Parameter | Value |
+|-----------|-------|
+| Algorithm | Argon2id (default variant) |
+| Output length | 32 bytes (256 bits) |
+| Salt | 16-byte random value, stored in `salt.bin` (hex-encoded) |
+
+The derived 32-byte key is used directly as the XChaCha20-Poly1305 encryption key for `passwords.enc`.
+
+### Master password hashing (for login verification)
+
+When storing the master password hash in `master.hash`, pm uses explicit Argon2id parameters designed to make brute-force expensive:
 
 | Parameter | Value |
 |-----------|-------|
@@ -17,8 +33,7 @@ Your master password is never stored directly. Instead, pm derives a 256-bit enc
 | Memory cost | 131072 KB (128 MB) |
 | Time cost (iterations) | 5 |
 | Parallelism (lanes) | 4 |
-| Output length | 32 bytes (256 bits) |
-| Salt | 16-byte random value, stored in `salt.bin` |
+| Salt | Randomly generated per hash (embedded in the PHC string) |
 
 Argon2id won the [Password Hashing Competition](https://www.password-hashing.net/) in 2015. The `id` variant combines the side-channel resistance of Argon2i with the GPU-resistance of Argon2d, making it the recommended choice for password-based key derivation.
 
@@ -29,7 +44,7 @@ The 128 MB memory requirement means an attacker cannot run thousands of parallel
 The salt used for key derivation is a 16-byte random value generated once when the vault is first created. It is hex-encoded and stored in `salt.bin`. This salt is fixed per vault — it is not regenerated on each key derivation.
 
 <Note>
-  This salt is distinct from the per-operation salt embedded in the Argon2 master password hash stored in `master.hash`. The key derivation salt protects the derived encryption key; the hash salt protects the stored master password verifier.
+  This salt is distinct from the per-operation salt embedded in the Argon2 master password hash stored in `master.hash`. The key derivation salt is an input to the encryption key computation; the hash salt is embedded in the PHC string alongside the master password verifier hash.
 </Note>
 
 ### Master password verification
@@ -37,7 +52,7 @@ The salt used for key derivation is a 16-byte random value generated once when t
 To verify the master password at login without storing it, pm hashes it separately using Argon2id and stores the result in `master.hash` using the PHC string format. This hash includes its own randomly generated salt and the full algorithm parameters.
 
 ```
-$argon2id$v=19$m=131072,t=5,p=4$<salt>$<hash>
+$argon2id$v=19$m=131072,t=5,p=4$<base64-salt>$<base64-hash>
 ```
 
 Verification parses this string and runs Argon2id with the embedded parameters and salt, then compares the output. The raw password is never written to disk.
@@ -89,7 +104,7 @@ After encryption, the JSON string is zeroized from memory.
 
 ```mermaid
 flowchart TD
-    A[Master password] --> B[Argon2id\n128 MB · 5 iter · 4 lanes]
+    A[Master password] --> B[Argon2id default params]
     S[salt.bin\n16-byte random salt] --> B
     B --> C[256-bit encryption key]
     C --> D[XChaCha20-Poly1305 decrypt]
@@ -97,6 +112,8 @@ flowchart TD
     D --> F[JSON plaintext]
     F --> G[HashMap in memory]
     G --> H[Zeroize plaintext + JSON]
+    A --> V[Argon2id\n128 MB · 5 iter · 4 lanes]
+    V --> W[master.hash\nPHC string for login verification]
 ```
 
 ## Memory zeroization
