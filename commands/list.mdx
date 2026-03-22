@@ -1,0 +1,49 @@
+---
+title: list
+description: Display the names of all passwords stored in your pm vault.
+---
+
+The `list` command prints the names (labels) of every password entry in your vault. It does not reveal any actual passwords.
+
+## Syntax
+
+```bash
+pm list
+```
+
+## Arguments
+
+This command takes no arguments.
+
+## Behavior
+
+After master password authentication, `pm` reads your vault and prints all stored entry names.
+
+- If entries exist, it prints a header `--- Saved Passwords ---` followed by a bullet list of names.
+- If the vault is empty, it prints: `No passwords saved yet!`
+
+<Info>
+  Only entry names are shown — never the passwords themselves. This makes it safe to run `pm list` to check what you have stored without exposing any secrets.
+</Info>
+
+## Example
+
+Vault with entries:
+
+```bash
+$ pm list
+Enter master password: 
+--- Saved Passwords ---
+• github
+• email
+• aws-prod
+• postgres-local
+```
+
+Empty vault:
+
+```bash
+$ pm list
+Enter master password: 
+No passwords saved yet!
+```

@@ -1,97 +1,72 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "pm — Rust Password Manager"
+description: "A fast, secure, and lightweight password manager CLI built entirely in Rust. No cloud, no tracking, just local encryption."
 ---
 
-## Setting up
-
-Get your documentation site up and running in minutes.
-
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
-
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/installation">
+    Get `pm` installed on Linux, macOS, or Windows in minutes.
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Set your master password and store your first credential.
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="Command Reference" icon="terminal" href="/commands/overview">
+    Explore every command: add, get, delete, and list.
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="Security Model" icon="shield-halved" href="/security/overview">
+    Learn how XChaCha20-Poly1305 and Argon2id protect your vault.
   </Card>
-</Columns>
+</CardGroup>
 
-## Create beautiful pages
+## Why pm?
 
-Everything you need to create world-class documentation.
+`pm` is a minimal, offline password manager written in Rust. Your credentials are stored in an encrypted file on your own machine — no accounts, no sync, no telemetry.
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
+<CardGroup cols={2}>
+  <Card title="Privacy first" icon="lock">
+    Your passwords never leave your machine. The encrypted vault lives in `~/.my_pass_manager/` and never touches a network.
   </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
+  <Card title="Modern encryption" icon="key">
+    Passwords are encrypted with **XChaCha20-Poly1305** and your master key is derived with **Argon2id** — the same algorithms protecting high-security systems.
   </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
+  <Card title="Memory safe" icon="microchip">
+    Sensitive strings are wiped from RAM immediately after use via the `zeroize` crate — no residual secrets left in memory.
   </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
+  <Card title="Lightweight" icon="bolt">
+    A single statically-linked binary. No runtime dependencies, no daemon, no GUI. Starts in milliseconds.
   </Card>
-</Columns>
+</CardGroup>
 
-## Need inspiration?
+## How it works
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+<Steps>
+  <Step title="Set a master password">
+    On first run, `pm` prompts you to create a master password. This password is hashed with Argon2id and stored locally — it is the only key to your vault.
+  </Step>
+  <Step title="Store credentials">
+    Use `pm add <name>` to encrypt and save a password under a memorable name like `github` or `email`.
+  </Step>
+  <Step title="Retrieve credentials">
+    Use `pm get <name>` to decrypt and display a stored password. You are always prompted for your master password first.
+  </Step>
+</Steps>
+
+<Note>
+  Your master password is never stored in plain text. If you forget it, your vault cannot be recovered. Keep it safe.
+</Note>
+
+## Quick example
+
+```bash
+# First run — set up master password
+pm add github
+
+# Later — retrieve it
+pm get github
+
+# See all stored names
+pm list
+
+# Remove a credential
+pm delete github
+```

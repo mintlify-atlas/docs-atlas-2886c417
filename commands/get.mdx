@@ -1,0 +1,45 @@
+---
+title: get
+description: Retrieve and print a stored password from your pm vault by name.
+---
+
+The `get` command looks up a password in your encrypted vault by name and prints it to stdout.
+
+## Syntax
+
+```bash
+pm get <name>
+```
+
+## Arguments
+
+| Argument | Type | Required | Description |
+| --- | --- | --- | --- |
+| `<name>` | string | Yes | The label of the password to retrieve |
+
+## Behavior
+
+After master password authentication, `pm` searches the vault for an entry matching `<name>`.
+
+- If found, it prints: `Password for <name> : <password>`
+- If not found, it prints: `No password found for '<name>'`
+
+## Example
+
+```bash
+$ pm get github
+Enter master password: 
+Password for github : s3cr3tP@ssw0rd!
+```
+
+If no entry exists for the given name:
+
+```bash
+$ pm get gitlab
+Enter master password: 
+No password found for 'gitlab'
+```
+
+<Warning>
+  The password is printed in plain text to stdout. Avoid running this command in shared terminal sessions, screen shares, or recorded environments where others could see the output.
+</Warning>

@@ -1,0 +1,121 @@
+---
+title: 'Data storage'
+description: 'Where pm stores your vault and what each file contains.'
+---
+
+pm stores all data in a single directory on your local filesystem. There is no cloud storage, no sync, and no network access.
+
+## Data directory location
+
+<Tabs>
+  <Tab title="Linux and macOS">
+    ```
+    ~/.my_pass_manager/
+    ```
+  </Tab>
+  <Tab title="Windows">
+    ```
+    %USERPROFILE%\.my_pass_manager\
+    ```
+  </Tab>
+</Tabs>
+
+## Files in the data directory
+
+<Tree>
+  <Tree.Folder name=".my_pass_manager" defaultOpen>
+    <Tree.File name="master.hash" />
+    <Tree.File name="passwords.enc" />
+    <Tree.File name="salt.bin" />
+  </Tree.Folder>
+</Tree>
+
+### master.hash
+
+Contains the Argon2id hash of your master password in [PHC string format](https://github.com/P-H-C/phc-string-format/blob/master/phc-sf-spec.md):
+
+```
+$argon2id$v=19$m=131072,t=5,p=4$<base64-salt>$<base64-hash>
+```
+
+This string includes the algorithm parameters, a per-hash random salt, and the derived hash. pm uses this to verify your master password at login without storing the password itself.
+
+<AccordionGroup>
+  <Accordion title="What happens if master.hash is deleted?">
+    pm cannot verify your master password and will refuse to open the vault. You must either restore the file from a backup or reinitialize the vault.
+
+    If you know the master password and still have `passwords.enc` and `salt.bin`, you can start fresh: delete the entire data directory, reinitialize pm, and re-enter your passwords manually. There is no automated recovery path.
+  </Accordion>
+  <Accordion title="Can master.hash be used to recover the master password?">
+    No. Argon2id is a one-way function. The stored hash can be used to verify a candidate password, but not to reverse-compute the original. An attacker with a copy of `master.hash` would need to run Argon2id (128 MB · 5 iterations · 4 lanes) for every password guess — making brute force expensive.
+  </Accordion>
+</AccordionGroup>
+
+### passwords.enc
+
+The encrypted vault. The binary layout is:
+
+```
+[ 24-byte XChaCha20-Poly1305 nonce ][ ciphertext + 16-byte auth tag ]
+```
+
+The plaintext is a UTF-8 JSON object mapping entry names to passwords. This file cannot be read without both the correct master password and the `salt.bin` key derivation salt.
+
+<AccordionGroup>
+  <Accordion title="What happens if passwords.enc is modified or corrupted?">
+    XChaCha20-Poly1305 verifies an authentication tag on decryption. Any modification to the ciphertext or nonce — even a single bit — causes authentication to fail and decryption is aborted. pm will report an error and will not return partial or corrupted data.
+  </Accordion>
+  <Accordion title="What happens if passwords.enc is deleted?">
+    Your vault is gone. pm will create a new empty vault on the next save, but previously stored passwords cannot be recovered without a backup.
+  </Accordion>
+</AccordionGroup>
+
+### salt.bin
+
+A hex-encoded 16-byte random value generated once when the vault is first created. This salt is an input to Argon2id when deriving the encryption key from your master password.
+
+<AccordionGroup>
+  <Accordion title="What happens if salt.bin is deleted?">
+    pm cannot reproduce the original encryption key. Even if you enter the correct master password, Argon2id will derive a different key (because the salt is missing or replaced), and decryption of `passwords.enc` will fail.
+
+    `master.hash` verification is unaffected — it uses its own embedded salt — but the vault will be unreadable. Restore `salt.bin` from a backup alongside `passwords.enc` to recover your vault.
+  </Accordion>
+  <Accordion title="Is it safe if an attacker gets salt.bin?">
+    `salt.bin` is not secret in the same way your master password is. Its purpose is to ensure that the derived key is unique to your vault, not to add entropy that the attacker does not have. An attacker with both `salt.bin` and `passwords.enc` still needs to brute-force your master password through Argon2id (128 MB per guess). Keep `salt.bin` backed up, but its disclosure does not directly expose your vault.
+  </Accordion>
+</AccordionGroup>
+
+## Backup recommendations
+
+<Warning>
+  Deleting the `~/.my_pass_manager/` directory permanently destroys your vault. There is no recovery without a backup.
+</Warning>
+
+To back up your vault, copy all three files together:
+
+- `master.hash`
+- `passwords.enc`
+- `salt.bin`
+
+All three files are required to decrypt the vault. Back them up as a set and store the backup in a location you trust (e.g., an encrypted external drive). The encrypted vault is safe to store on untrusted media — an attacker still needs your master password to decrypt it — but `salt.bin` should be kept with it.
+
+## Starting fresh
+
+<Info>
+  To reset pm and start with an empty vault, delete the data directory. pm will create a new vault, prompt for a new master password, and generate a new `salt.bin` on next use.
+</Info>
+
+<Tabs>
+  <Tab title="Linux and macOS">
+    ```bash
+    rm -rf ~/.my_pass_manager/
+    ```
+  </Tab>
+  <Tab title="Windows">
+    ```powershell
+    Remove-Item -Recurse -Force "$env:USERPROFILE\.my_pass_manager"
+    ```
+  </Tab>
+</Tabs>
+
+This action is irreversible. All stored passwords will be permanently deleted.

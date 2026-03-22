@@ -1,0 +1,91 @@
+---
+title: 'Contributing'
+description: 'How to report bugs, suggest features, and submit pull requests to pm.'
+---
+
+Contributions are welcome. This page covers how to get involved with the pm project.
+
+## Development setup
+
+You need the standard Rust toolchain to build and test the project.
+
+<Steps>
+  <Step title="Install the Rust toolchain">
+    Install `rustup` from [rustup.rs](https://rustup.rs), which provides `cargo` and `rustc`.
+  </Step>
+
+  <Step title="Clone the repository">
+    ```bash
+    git clone https://github.com/ManOfGoldForever/Rust-Password-Manager.git
+    cd Rust-Password-Manager
+    ```
+  </Step>
+
+  <Step title="Build the project">
+    ```bash
+    cargo build
+    ```
+  </Step>
+
+  <Step title="Run the tests">
+    ```bash
+    cargo test
+    ```
+  </Step>
+</Steps>
+
+## Reporting bugs
+
+1. Check the [Issues tab](https://github.com/ManOfGoldForever/Rust-Password-Manager/issues) to see if the bug has already been reported.
+2. If not, open a new issue with the label `bug`.
+3. Include the following in your report:
+   - Your operating system and version
+   - Steps to reproduce the problem
+   - What you expected to happen vs. what actually happened
+
+## Suggesting features
+
+Open an issue with the label `enhancement` and describe:
+
+- What the feature does
+- Why it would be useful
+
+## Submitting pull requests
+
+Submit a PR if you have fixed a bug, added a feature, or corrected a typo.
+
+<AccordionGroup>
+  <Accordion title="Code quality">
+    Keep code readable. Avoid unnecessary complexity. Reviewers should be able to follow the logic without extensive comments.
+  </Accordion>
+
+  <Accordion title="Tests">
+    Include tests for any new features or bug fixes. All existing tests must pass before your PR will be reviewed.
+
+    ```bash
+    cargo test
+    ```
+  </Accordion>
+
+  <Accordion title="Formatting">
+    Run `cargo fmt` before submitting. PRs that don't follow the Rust style guide will be asked to reformat.
+
+    <Note>
+      `cargo fmt` automatically reformats your code to match the Rust style guide. Run it before every commit to keep diffs clean and reviewers focused on the logic rather than formatting.
+    </Note>
+
+    ```bash
+    cargo fmt
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Security vulnerabilities
+
+<Warning>
+  If you discover a security vulnerability, **do not open a public issue**. Contact the maintainer directly so the issue can be resolved before public disclosure.
+</Warning>
+
+## License
+
+All contributions are licensed under the [MIT License](https://opensource.org/licenses/MIT).

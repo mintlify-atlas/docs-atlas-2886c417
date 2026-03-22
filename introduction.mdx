@@ -1,0 +1,69 @@
+---
+title: Introduction
+description: pm is a privacy-first CLI password manager written in Rust, designed to keep your credentials secure and entirely under your control.
+---
+
+`pm` is a lightweight command-line password manager built in Rust. It stores your passwords locally, encrypted with XChaCha20-Poly1305, and derives encryption keys using Argon2id — meaning your data never leaves your machine and is protected by modern, peer-reviewed cryptography.
+
+There are no accounts, no cloud sync, and no third-party services. Everything lives in a single directory on your filesystem.
+
+## Key features
+
+<CardGroup cols={3}>
+  <Card title="XChaCha20-Poly1305 encryption" icon="lock">
+    All passwords are encrypted using XChaCha20-Poly1305, an authenticated encryption algorithm that provides confidentiality and integrity guarantees.
+  </Card>
+  <Card title="Argon2id key derivation" icon="shield">
+    Your master password is never stored directly. Argon2id — a memory-hard, GPU-resistant hashing algorithm — derives the encryption key from it.
+  </Card>
+  <Card title="Memory safety with zeroize" icon="trash">
+    Sensitive values are zeroed out in memory as soon as they are no longer needed, reducing the risk of secrets being leaked via memory dumps.
+  </Card>
+  <Card title="Privacy-first" icon="eye-slash">
+    No telemetry, no network requests, no accounts. All data stays on your local machine in `~/.my_pass_manager/`.
+  </Card>
+  <Card title="Cross-platform" icon="computer">
+    Pre-built binaries available for Linux, macOS, and Windows. Install scripts handle PATH setup automatically.
+  </Card>
+  <Card title="Lightweight" icon="feather">
+    A single binary with no runtime dependencies. Four commands cover everything: `add`, `get`, `delete`, and `list`.
+  </Card>
+</CardGroup>
+
+## How it works
+
+When you run `pm` for the first time, you create a master password. That password is hashed with Argon2id and stored in `~/.my_pass_manager/master.hash` alongside a `salt.bin` file. All subsequent commands require you to enter your master password, which is used to derive the decryption key for `passwords.enc`.
+
+Your vault is a single encrypted file. There is no server to breach and no sync service to compromise.
+
+## Data directory
+
+<Tabs>
+  <Tab title="Linux / macOS">
+    ```
+    ~/.my_pass_manager/
+    ├── master.hash    # Argon2id hash of your master password
+    ├── passwords.enc  # XChaCha20-Poly1305 encrypted password store
+    └── salt.bin       # Salt used for key derivation
+    ```
+  </Tab>
+  <Tab title="Windows">
+    ```
+    %USERPROFILE%\.my_pass_manager\
+    ├── master.hash
+    ├── passwords.enc
+    └── salt.bin
+    ```
+  </Tab>
+</Tabs>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/installation">
+    Install `pm` using a pre-built binary or build it from source.
+  </Card>
+  <Card title="Quickstart" icon="bolt" href="/quickstart">
+    Set your master password and store your first credential in under 5 minutes.
+  </Card>
+</CardGroup>

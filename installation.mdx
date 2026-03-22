@@ -1,0 +1,114 @@
+---
+title: Installation
+description: Install pm using a pre-built binary or build it from source with the Rust toolchain.
+---
+
+## Pre-built binaries (recommended)
+
+Pre-built binaries are available for Linux, macOS, and Windows from the [GitHub releases page](https://github.com/ManOfGoldForever/Rust-Password-Manager/releases). The release archive includes an install script that moves the `pm` binary onto your `PATH`.
+
+<Tabs>
+  <Tab title="Linux / macOS">
+    <Steps>
+      <Step title="Download the release archive">
+        Go to the [GitHub releases page](https://github.com/ManOfGoldForever/Rust-Password-Manager/releases) and download the `.tar.gz` archive for your operating system.
+      </Step>
+      <Step title="Extract the archive">
+        ```bash
+        tar -xzf pm-linux.tar.gz
+        ```
+        Replace `pm-linux.tar.gz` with the actual filename you downloaded.
+      </Step>
+      <Step title="Run the install script">
+        ```bash
+        chmod +x linux-mac-install.sh && ./linux-mac-install.sh
+        ```
+        <Note>
+          The install script moves the `pm` binary to a directory on your `PATH` so you can run `pm` from any working directory.
+        </Note>
+      </Step>
+      <Step title="Verify the installation">
+        ```bash
+        pm --help
+        ```
+        You should see the help output listing the available commands.
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab title="Windows">
+    <Steps>
+      <Step title="Download the release archive">
+        Go to the [GitHub releases page](https://github.com/ManOfGoldForever/Rust-Password-Manager/releases) and download the `.zip` archive for Windows.
+      </Step>
+      <Step title="Extract the archive">
+        Right-click the `.zip` file and select **Extract All**, or use your preferred archive tool.
+      </Step>
+      <Step title="Run the install script">
+        Right-click `windows-install.ps1` and select **Run with PowerShell**.
+        <Note>
+          The install script moves the `pm` binary to a directory on your `PATH` so you can run `pm` from any terminal window.
+        </Note>
+      </Step>
+      <Step title="Verify the installation">
+        Open a new terminal and run:
+        ```bash
+        pm --help
+        ```
+        You should see the help output listing the available commands.
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Build from source
+
+If you prefer to compile `pm` yourself, you need the Rust toolchain installed.
+
+### Prerequisites
+
+- **Rust toolchain** — install from [rustup.rs](https://rustup.rs)
+- **Git**
+
+<Warning>
+  Linux users may need build essentials before compiling. Install them with:
+  ```bash
+  sudo apt update && sudo apt install build-essential
+  ```
+  This provides `gcc` and `make`, which are required to compile some of `pm`'s native dependencies.
+</Warning>
+
+<Steps>
+  <Step title="Install the Rust toolchain">
+    Visit [rustup.rs](https://rustup.rs) and follow the instructions for your platform. Once complete, `cargo` will be available in your terminal.
+  </Step>
+  <Step title="Clone the repository">
+    ```bash
+    git clone https://github.com/ManOfGoldForever/Rust-Password-Manager.git
+    ```
+  </Step>
+  <Step title="Build in release mode">
+    ```bash
+    cd Rust-Password-Manager && cargo build --release
+    ```
+    This compiles all dependencies and produces an optimized binary.
+  </Step>
+  <Step title="Locate the binary">
+    <CodeGroup>
+
+    ```bash Linux / macOS
+    ./target/release/pm
+    ```
+
+    ```bash Windows
+    .\target\release\pm.exe
+    ```
+
+    </CodeGroup>
+    Optionally, move the binary to a directory on your `PATH` so you can invoke `pm` from anywhere.
+  </Step>
+  <Step title="Verify the build">
+    ```bash
+    pm --help
+    ```
+  </Step>
+</Steps>

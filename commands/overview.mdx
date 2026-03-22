@@ -1,0 +1,50 @@
+---
+title: Commands
+description: Reference for all pm CLI commands. Every command requires master password authentication.
+---
+
+`pm` organizes all functionality into subcommands. Every command — without exception — requires you to authenticate with your master password before it runs.
+
+<Note>
+  If this is your first time running any `pm` command, you will be prompted to set up a master password. Enter it twice to confirm before continuing.
+</Note>
+
+## Available commands
+
+<CardGroup cols={2}>
+  <Card title="add" icon="plus" href="/commands/add">
+    Save a new password to the vault under a given name.
+  </Card>
+  <Card title="get" icon="key" href="/commands/get">
+    Retrieve and print a stored password by name.
+  </Card>
+  <Card title="delete" icon="trash" href="/commands/delete">
+    Permanently remove a stored password from the vault.
+  </Card>
+  <Card title="list" icon="list" href="/commands/list">
+    Display the names of all passwords currently stored in the vault.
+  </Card>
+</CardGroup>
+
+## Command summary
+
+| Command | Syntax | Description |
+| --- | --- | --- |
+| `add` | `pm add <name>` | Prompts for a password and saves it under `<name>` |
+| `get` | `pm get <name>` | Prints the password stored under `<name>` |
+| `delete` | `pm delete <name>` | Permanently deletes the password stored under `<name>` |
+| `list` | `pm list` | Lists the names of all stored passwords |
+
+## Master password authentication
+
+Every command requires your master password before it executes. This protects your entire vault behind a single secret.
+
+```bash
+$ pm list
+Enter master password: 
+--- Saved Passwords ---
+• github
+• email
+```
+
+If you enter the wrong master password, the command will not proceed and your vault data will not be accessible.

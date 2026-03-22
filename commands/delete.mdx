@@ -1,0 +1,59 @@
+---
+title: delete
+description: Permanently remove a stored password from your pm vault by name.
+---
+
+The `delete` command removes a password entry from your encrypted vault. This action is permanent and cannot be undone.
+
+## Syntax
+
+```bash
+pm delete <name>
+```
+
+## Arguments
+
+| Argument | Type | Required | Description |
+| --- | --- | --- | --- |
+| `<name>` | string | Yes | The label of the password to delete |
+
+## Behavior
+
+After master password authentication, `pm` loads your vault, removes the entry matching `<name>`, and saves the updated vault.
+
+- If found and deleted: `Successfully deleted password for: <name>`
+- If no entry exists with that name: `Error: No password found with the name '<name>'`
+
+<Warning>
+  Deletion is permanent. There is no confirmation prompt and no way to recover a deleted password. Use `pm get <name>` to retrieve the password first if you need it.
+</Warning>
+
+## Example
+
+Successful deletion:
+
+```bash
+$ pm delete github
+Enter master password: 
+Successfully deleted password for: github
+```
+
+Attempting to delete a name that does not exist:
+
+```bash
+$ pm delete gitlab
+Enter master password: 
+Error: No password found with the name 'gitlab'
+```
+
+## Verifying deletion
+
+Run `pm list` after deleting to confirm the entry has been removed:
+
+```bash
+$ pm list
+Enter master password: 
+--- Saved Passwords ---
+• email
+• aws-prod
+```

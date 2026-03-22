@@ -1,0 +1,49 @@
+---
+title: 'Uninstallation'
+description: 'Completely remove pm and all saved data from your system.'
+---
+
+<Warning>
+  **This action is permanent and cannot be undone.** Uninstalling pm deletes all saved passwords, your master password, and the tool itself. There is no way to recover this data after removal.
+</Warning>
+
+## Uninstall pm
+
+Use the uninstall script included in the repository for your platform.
+
+<Tabs>
+  <Tab title="Linux / Mac">
+    Make the script executable and run it:
+
+    ```bash
+    chmod +x linux-mac-uninstall.sh && ./linux-mac-uninstall.sh
+    ```
+  </Tab>
+  <Tab title="Windows">
+    Right-click `windows-uninstall.ps1` in File Explorer and select **Run with PowerShell**.
+  </Tab>
+</Tabs>
+
+## What gets removed
+
+The uninstall script removes:
+
+- The `pm` binary from your `PATH`
+- The `~/.my_pass_manager/` data directory, which contains all saved passwords and your master password
+
+## Reset without uninstalling
+
+If you want to clear all saved passwords and start fresh without removing the tool itself, delete the data directory manually:
+
+<Tabs>
+  <Tab title="Linux / Mac">
+    ```bash
+    rm -rf ~/.my_pass_manager/
+    ```
+  </Tab>
+  <Tab title="Windows">
+    Delete the `.my_pass_manager` folder in your user home directory (`%USERPROFILE%\.my_pass_manager`).
+  </Tab>
+</Tabs>
+
+The next time you run `pm`, it will prompt you to set a new master password.

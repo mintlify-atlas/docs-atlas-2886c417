@@ -1,0 +1,88 @@
+---
+title: 'Build from source'
+description: 'Compile pm from source code using the Rust toolchain.'
+---
+
+Building from source gives you full control over the binary and lets you run the latest unreleased changes.
+
+## Prerequisites
+
+- **Rust toolchain** — Install via [rustup.rs](https://rustup.rs). This provides `cargo`, `rustc`, and all required tools.
+- **Git** — To clone the repository.
+
+<Warning>
+  **Linux users:** You may need build essentials installed before compiling. On Debian/Ubuntu-based systems, run:
+
+  ```bash
+  sudo apt install build-essential
+  ```
+
+  This provides `gcc`, `make`, and related tools that the Rust linker depends on.
+</Warning>
+
+## Build steps
+
+<Steps>
+  <Step title="Clone the repository">
+    ```bash
+    git clone https://github.com/ManOfGoldForever/Rust-Password-Manager.git
+    ```
+  </Step>
+
+  <Step title="Enter the project directory">
+    ```bash
+    cd Rust-Password-Manager
+    ```
+  </Step>
+
+  <Step title="Compile in release mode">
+    ```bash
+    cargo build --release
+    ```
+
+    This produces an optimized binary. The first build will download and compile all dependencies, which may take a few minutes.
+  </Step>
+
+  <Step title="Locate the binary">
+    After a successful build, the binary is placed in the `target/release/` directory.
+
+    <Tabs>
+      <Tab title="Linux / Mac">
+        ```bash
+        ./target/release/pm
+        ```
+
+        Copy it to a directory on your `PATH` to use it system-wide:
+
+        ```bash
+        sudo cp target/release/pm /usr/local/bin/pm
+        ```
+      </Tab>
+      <Tab title="Windows">
+        ```
+        target\release\pm.exe
+        ```
+
+        Copy it to a directory included in your `PATH` environment variable to use it system-wide.
+      </Tab>
+    </Tabs>
+  </Step>
+</Steps>
+
+## Running tests
+
+To verify that everything works correctly after building:
+
+```bash
+cargo test
+```
+
+All tests must pass before submitting a pull request.
+
+## Code formatting
+
+```bash
+cargo fmt
+```
+
+Run `cargo fmt` to automatically format your code according to the Rust style guide. This is required for all contributions.

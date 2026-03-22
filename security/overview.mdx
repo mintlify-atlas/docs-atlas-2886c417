@@ -1,0 +1,55 @@
+---
+title: 'Security overview'
+description: 'How pm protects your passwords and what its security boundaries are.'
+---
+
+pm is an offline-only password manager. All data is stored locally and never transmitted to a network. Your master password is the single point of trust — everything else in the vault is derived from it.
+
+<Note>
+  If your master password is compromised, your entire vault is compromised. Choose a strong, unique master password and never share it.
+</Note>
+
+## Security properties
+
+<CardGroup cols={2}>
+  <Card title="Offline-only" icon="wifi-slash">
+    pm has no network functionality. Your vault never leaves your machine. There is no sync service, no cloud backup, and no authentication server.
+  </Card>
+  <Card title="Authenticated encryption" icon="shield-check">
+    Vault data is encrypted with XChaCha20-Poly1305, which provides both confidentiality and integrity. Any tampering with the encrypted file is detected on decryption.
+  </Card>
+  <Card title="Strong key derivation" icon="key">
+    The encryption key is derived from your master password using Argon2id with 128 MB of memory and 5 iterations. This makes brute-force attacks computationally expensive.
+  </Card>
+  <Card title="Memory safety" icon="memory">
+    Sensitive values — passwords, keys, plaintext bytes, and JSON strings — are explicitly zeroized from memory after use using the `zeroize` crate.
+  </Card>
+</CardGroup>
+
+## What pm protects against
+
+- **Vault file theft**: An attacker who obtains your `passwords.enc` file cannot read its contents without your master password and `salt.bin`.
+- **Offline brute force**: Argon2id's memory-hard parameters make dictionary and brute-force attacks slow even with specialized hardware.
+- **Ciphertext tampering**: XChaCha20-Poly1305 authentication tags cause decryption to fail if the vault file has been modified.
+- **Key reuse**: A fresh random nonce is generated for every save operation, so the same plaintext never produces the same ciphertext.
+- **Memory exposure after use**: Zeroized memory reduces the window during which sensitive values can be read from a process dump or swap file.
+
+## What pm does NOT protect against
+
+<Warning>
+  pm cannot protect you if your operating system or session is already compromised.
+</Warning>
+
+- **Compromised OS or root access**: A privileged attacker can read process memory, intercept keyboard input, or access unlocked vault data.
+- **Keyloggers**: If your master password is captured at input time, the entire vault is exposed.
+- **Screen capture and shoulder surfing**: Passwords displayed in the terminal are visible to anyone who can see your screen.
+- **Physical access to an unlocked session**: pm does not maintain a persistent unlocked state, but decrypted passwords are printed to the terminal and visible in shell history depending on your configuration.
+- **Backups that include the data directory**: Unencrypted backups of `~/.my_pass_manager/` preserve the encrypted vault but also the key derivation salt. Protect backup media accordingly.
+
+## Trust model
+
+pm derives all security from one secret: your master password. There are no recovery codes, no secondary authentication factors, and no server-side escrow. If you forget your master password, the vault cannot be decrypted.
+
+The key derivation salt (`salt.bin`) and the encrypted vault (`passwords.enc`) are both required to decrypt the vault. Losing `salt.bin` while keeping the same master password means the derived key will differ and decryption will fail.
+
+See [Encryption](/security/encryption) for cryptographic details and [Data storage](/security/data-storage) for file locations and recovery guidance.
